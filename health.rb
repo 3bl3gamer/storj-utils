@@ -26,8 +26,8 @@ def fmt_uptime(ms)
 end
 
 def fmt_allocation(str)
-  str =~ /^(\d+)(KB|MB|GB|TB)$/
-  return $1.to_i * {'KB'=>1024, 'MB'=>1024*1024, 'GB'=>1024*1024*1024, 'TB'=>1024*1024*1024*1024}[$2]
+  str =~ /^(\d+)(B|KB|MB|GB|TB)$/
+  return $1.to_i * {'B'=>1, 'KB'=>1024, 'MB'=>1024*1024, 'GB'=>1024*1024*1024, 'TB'=>1024*1024*1024*1024}[$2]
 end
 
 def get_log_info(node_id, logs_dir)
