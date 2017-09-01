@@ -4,5 +4,5 @@ Set objShell = WScript.CreateObject("WScript.Shell")
 objShell.CurrentDirectory = scriptDirectory
 
 Set WshShell = CreateObject("WScript.Shell")
-WshShell.Run "cmd /C ruby health.rb " & WScript.Arguments.Item(0), 0
+WshShell.Run "cmd /C echo %date%-%time% >> log.txt & echo %date%-%time% >> err.txt & ruby health.rb " & WScript.Arguments.Item(0) & " >> log.txt 2>> err.txt", 0
 Set WshShell = Nothing
