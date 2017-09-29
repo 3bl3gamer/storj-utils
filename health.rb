@@ -91,7 +91,7 @@ def get_my_nodes_stats
       rt: api_node["responseTime"].to_i,
       delta: node["meta"]["farmerState"]["ntpStatus"]["delta"].to_i,
       offers: node["meta"]["farmerState"]["contractCount"],
-      bridge_status: node["meta"]["farmerState"]["bridgesConnectionStatus"]==3 ? 1 : 0, #3:"connected", 2:"confirming", 1:"connecting", 0:"disconnected"
+      bridge_status: node["meta"]["farmerState"]["bridgesConnectionStatus"], #3:"connected", 2:"confirming", 1:"connecting", 0:"disconnected"
 
       last_offer: log_info[:offer][:last],
       last_upload: log_info[:upload][:last],
