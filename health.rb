@@ -65,7 +65,8 @@ def get_my_nodes_stats
     puts "Node #{node['id']}:"
 
     puts "  getting API info..."
-    api_node = JSON.load(Net::HTTP.get(URI(node["config"]["bridgeUri"]+"/contacts/"+node["id"])))
+    bridge_uri = node["config"]["bridgeUri"] || node["config"]["bridges"][0]['url']
+    api_node = JSON.load(Net::HTTP.get(URI(bridge_uri+"/contacts/"+node["id"])))
     puts "  getting LOG info..."
     log_info = get_log_info(node["id"], node["config"]["loggerOutputFile"])
 
