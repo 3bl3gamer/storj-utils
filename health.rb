@@ -70,6 +70,9 @@ def get_my_nodes_stats
     puts "  getting LOG info..."
     log_info = get_log_info(node["id"], node["config"]["loggerOutputFile"])
 
+    is_linux = !!(RUBY_PLATFORM =~ /linux/)
+    is_windows = !is_linux && !!(RUBY_PLATFORM =~ /cygwin|mswin|mingw|bccwin|wince|emx/)
+
     {
       email: $EMAIL,
       node_id: node["id"],
@@ -78,9 +81,11 @@ def get_my_nodes_stats
       port: node["config"]["rpcPort"],
       agent: api_node["userAgent"],
       localtime: Time.now.to_i,
+      os: is_linux ? 1 : is_windows ? 2 : 0,
 
       uptime: fmt_uptime(node["meta"]["uptimeMs"]),
       peers: node["meta"]["farmerState"]["totalPeers"],
+      drc: node["meta"]["farmerState"]["dataReceivedCount"],
       restarts: node["meta"]["numRestarts"],
 
       share_allocated: fmt_allocation(node["config"]["storageAllocation"]),
