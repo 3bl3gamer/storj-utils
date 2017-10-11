@@ -3,7 +3,10 @@ require 'net/http'
 require 'json'
 
 
+$SCRIPT_VERSION = "1.1"
+
 def print_usage_and_exit
+  puts "Storj stat updater v#{$SCRIPT_VERSION}"
   puts "Usage: #{$0} email [daemon address] [daemon port]"
   puts "  address defaults to 127.0.0.1"
   puts "  port defaults to 45015"
@@ -82,11 +85,14 @@ def get_my_nodes_stats
       agent: api_node["userAgent"],
       localtime: Time.now.to_i,
       os: is_linux ? 1 : is_windows ? 2 : 0,
+      ver: "rb#{$SCRIPT_VERSION}",
 
       uptime: fmt_uptime(node["meta"]["uptimeMs"]),
       peers: node["meta"]["farmerState"]["totalPeers"],
       drc: node["meta"]["farmerState"]["dataReceivedCount"],
       restarts: node["meta"]["numRestarts"],
+      lcs: api_node["lastContractSent"],
+      SpaceAvailable: api_node["spaceAvailable"],
 
       share_allocated: fmt_allocation(node["config"]["storageAllocation"]),
       share_used: node["meta"]["farmerState"]["spaceUsedBytes"],
@@ -95,6 +101,7 @@ def get_my_nodes_stats
       lt: api_node["lastTimeout"],
       tr: api_node["timeoutRate"],
       rt: api_node["responseTime"].to_i,
+      reputation: api_node["reputation"],
       delta: node["meta"]["farmerState"]["ntpStatus"]["delta"].to_i,
       offers: node["meta"]["farmerState"]["contractCount"],
       bridge_status: node["meta"]["farmerState"]["bridgesConnectionStatus"], #3:"connected", 2:"confirming", 1:"connecting", 0:"disconnected"
