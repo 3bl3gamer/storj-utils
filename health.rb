@@ -3,7 +3,7 @@ require 'net/http'
 require 'json'
 
 
-$SCRIPT_VERSION = "1.1"
+$SCRIPT_VERSION = "1.2"
 
 def print_usage_and_exit
   puts "Storj stat updater v#{$SCRIPT_VERSION}"
@@ -56,6 +56,22 @@ def get_log_info(node_id, logs_dir)
   return stat
 end
 
+def get_api_node(bridge_uri, id)
+	n = 5
+	n.times do |iter|
+		begin
+			return JSON.load(Net::HTTP.get(URI(bridge_uri+"/contacts/"+id)))
+		rescue
+			if iter < n-1
+				puts "ERROR getting #{id}, retrying #{iter+1}/#{n-1}..."
+				sleep(iter+1)
+			else
+				raise
+			end
+		end
+	end
+end
+
 def get_my_nodes_stats
   puts "Getting nodes data..."
   sock = TCPSocket.new $DAEMON_ADDR, $DAEMON_PORT
@@ -69,7 +85,7 @@ def get_my_nodes_stats
 
     puts "  getting API info..."
     bridge_uri = node["config"]["bridgeUri"] || node["config"]["bridges"][0]['url']
-    api_node = JSON.load(Net::HTTP.get(URI(bridge_uri+"/contacts/"+node["id"])))
+	api_node = get_api_node(bridge_uri, node["id"])
     puts "  getting LOG info..."
     log_info = get_log_info(node["id"], node["config"]["loggerOutputFile"])
 
