@@ -30,7 +30,7 @@ end
 
 def fmt_allocation(str)
   str =~ /^(\d+)(B|KB|MB|GB|TB)$/
-  return $1.to_i * {'B'=>1, 'KB'=>1024, 'MB'=>1024*1024, 'GB'=>1024*1024*1024, 'TB'=>1024*1024*1024*1024}[$2]
+  return $1.to_i * {'B'=>1, 'KB'=>1000, 'MB'=>1000*1000, 'GB'=>1000*1000*1000, 'TB'=>1000*1000*1000*1000}[$2]
 end
 
 def get_log_info(node_id, logs_dir)
