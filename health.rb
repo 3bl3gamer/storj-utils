@@ -3,7 +3,7 @@ require 'net/http'
 require 'json'
 
 
-$SCRIPT_VERSION = "1.2"
+$SCRIPT_VERSION = "1.3"
 
 def print_usage_and_exit
   puts "Storj stat updater v#{$SCRIPT_VERSION}"
