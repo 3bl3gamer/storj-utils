@@ -3,7 +3,7 @@ require 'net/http'
 require 'json'
 
 
-$SCRIPT_VERSION = "1.3"
+$SCRIPT_VERSION = "1.4"
 
 def print_usage_and_exit
   puts "Storj stat updater v#{$SCRIPT_VERSION}"
@@ -39,18 +39,23 @@ def get_log_info(node_id, logs_dir)
     stat[name][:last] = line
     stat[name][:count] += 1
   end
-  File.new("#{logs_dir}/#{node_id}_#{$NOW.year}-#{$NOW.month}-#{$NOW.day}.log").each do |line|
-    if line.include? "PUBLISH"
-      event(:publish, line, stat)
-    elsif line.include? "OFFER"
-      event(:offer, line, stat)
-    elsif line.include? "consignment"
-      event(:consignment, line, stat)
-    elsif line.include? "download"
-      event(:download, line, stat)
-    elsif line.include? "upload"
-      event(:upload, line, stat)
+  fpath = "#{logs_dir}/#{node_id}_#{$NOW.year}-#{$NOW.month}-#{$NOW.day}.log"
+  begin
+    File.new(fpath).each do |line|
+      if line.include? "PUBLISH"
+        event(:publish, line, stat)
+      elsif line.include? "OFFER"
+        event(:offer, line, stat)
+      elsif line.include? "consignment"
+        event(:consignment, line, stat)
+      elsif line.include? "download"
+        event(:download, line, stat)
+      elsif line.include? "upload"
+        event(:upload, line, stat)
+      end
     end
+  rescue Errno::ENOENT
+    puts "[WARN] logfile not found: #{fpath}"
   end
   stat.each{|k,v| v[:last] = v[:last] && JSON.load(v[:last])["timestamp"] }
   return stat
